@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using katio_net.Data.Models;
+
 namespace katio.Data.Models;
-public class Books 
+public class Book : BaseEntity<int> 
 {
-    public int Id;
+    
     public string Title {get; set;}="";
 
     public string ISBN10{get; set;}="";
@@ -13,5 +16,9 @@ public class Books
     public string Edition {get; set;}="";
 
     public string DeweyIndex {get; set;}="";
+    [ForeignKey("Author")]
+    public int AuthorId {get; set;}
+
+    public virtual Author? Author{get;set;}
 
 }

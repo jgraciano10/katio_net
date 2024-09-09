@@ -1,12 +1,17 @@
 
+using katio.Data.Dto;
 using katio.Data.Models;
 namespace katio.Business.Interfaces;
 public interface IBookService
 {
-    Task<IEnumerable<Books>> GetAllBooks();
+    Task<BaseMessage<Book>> GetAllBooks();
 
-    Task<IEnumerable<Books>> GetById(int id);
+    Task<IEnumerable<Book>> GetById(int id);
 
-    Task<IEnumerable<Books>> GetByName(string name);
-    Task<IEnumerable<Books>> Update(Books book);
+    Task<BaseMessage<Book>> GetByName(string name);
+    Task<BaseMessage<Book>> CreateBook(Book book);
+    Task<BaseMessage<Book>> Update(Book book);
+
+    Task<BaseMessage<Book>> GetByAuthorId(int AuthorId);
+    Task<BaseMessage<Book>> GetByAuthorName(string AuthorName);
 }
