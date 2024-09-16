@@ -38,13 +38,24 @@ where TEntity : BaseEntity<TId>
         return await _dbSet.FindAsync(id);
     }
 
-    public Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, Book>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderby = null, string includeProperties = "")
+
+    public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, Book>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderby = null, string includeProperties = "")
     {
-        throw new NotImplementedException();
+        var lista = await _dbSet.ToListAsync();
+        return lista;
     }
 
-    public Task Update(TEntity entity)
+    public async Task Update(TEntity entity)
     {
-        throw new NotImplementedException();
+        
+            _dbSet.Update(entity);      
+            try
+            {
+                await _context.SaveChangesAsync();
+            }catch(Exception)
+            {
+                
+            }
+        
     }
 }

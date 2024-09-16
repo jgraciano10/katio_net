@@ -10,6 +10,14 @@ public class katioContext: DbContext
     {}
     public DbSet<Book> Books { get; set;} = null;
     public DbSet<Author> Author { get; set;} = null;
+    public DbSet<User> User { get; set;} = null;
+    public DbSet<AudioBooks> AudioBooks { get; set;} = null;
+    public DbSet<Narrator> Narrator { get; set;} = null;
+    public DbSet<Genres> Genres { get; set;} = null;
+
+
+
+
     
 
 
