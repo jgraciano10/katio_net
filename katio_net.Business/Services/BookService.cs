@@ -7,15 +7,21 @@ using katio.Data.Dto;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 namespace katio.Business.Services;
 
 public class BookService : IBookService
 {
     public readonly katioContext _context;
+    public readonly Repository<int, Book> _repository;
 
     public BookService (katioContext context)
     {
         _context = context;
+        _repository = GetRepository(_context);
+    }
+    public Repository<int, Book> GetRepository(katioContext context){
+        return new Repository<int, Book>(context);
     }
     public async Task<BaseMessage<Book>> CreateBook(Book book)
     {
@@ -44,7 +50,7 @@ public class BookService : IBookService
     public async Task<BaseMessage<Book>> GetAllBooks()
     {
         
-        var response = _context.Books.ToList();
+        var response = await _repository.GetAllAsync();
 
         return response.Any()? Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK, BaseMessageStatus.OK_200, response): Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
 
@@ -94,28 +100,17 @@ public class BookService : IBookService
 
     public async Task<BaseMessage<Book>> Update(Book book)
     {
-        var newBook = new Book()
+        var newBook = _context.Books.Where(x=>x.Title.Contains(book.Title, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+        if(book!=null && newBook!=null)
         {
-            Title = book.Title,
-            ISBN10 = book.ISBN10,
-            ISBN13 = book.ISBN13,
-            Published = book.Published,
-            Edition = book.Edition,
-            DeweyIndex = book.DeweyIndex
-        };
-        var elemento =_context.Books.Where(x => x.Title.Contains(newBook.Title, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            newBook.DeweyIndex = book.DeweyIndex;
+            newBook.ISBN10 = book.ISBN10;
+            newBook.ISBN13 = book.ISBN13;
+            newBook.Edition = book.Edition;
 
-        if(elemento!=null)
-        {
-            elemento.Title = newBook.Title;
-            elemento.Edition = newBook.Edition;
-            elemento.ISBN10 = newBook.ISBN10;
-            elemento.ISBN13 = newBook.ISBN13;
-            elemento.Published = newBook.Published;
-            elemento.DeweyIndex= newBook.DeweyIndex;
 
             try {
-                await _context.SaveChangesAsync();
+                await _repository.Update(newBook);
 
                 return Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK,BaseMessageStatus.OK_200, new List<Book>(){
                     new Book()

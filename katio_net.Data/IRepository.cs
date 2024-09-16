@@ -12,7 +12,7 @@ where TEntity : BaseEntity<TId>
     Task Delete(TEntity entity);
     Task Delete(TId id);
 
-    Task<IEnumerable<TEntity>> GetAllAsync(
+    Task<List<TEntity>> GetAllAsync(
         Expression<Func<TEntity, Book>> filter = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderby = null,
         string includeProperties = ""
