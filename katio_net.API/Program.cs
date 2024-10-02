@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using katio.Data.Models;
 using System.Runtime.InteropServices;
 using katio_net.Data.Models;
+using Katio.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
-
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 PopulateDB(app);

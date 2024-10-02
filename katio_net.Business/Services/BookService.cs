@@ -8,49 +8,40 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
+using Katio.Data;
 namespace katio.Business.Services;
 
 public class BookService : IBookService
 {
-    public readonly katioContext _context;
-    public readonly Repository<int, Book> _repository;
 
-    public BookService (katioContext context)
+    public IUnitOfWork _unitOfWork;
+    
+    
+
+    public BookService (IUnitOfWork unitOfWork)
     {
-        _context = context;
-        _repository = GetRepository(_context);
+       
+        _unitOfWork = unitOfWork;
+        
     }
-    public Repository<int, Book> GetRepository(katioContext context){
-        return new Repository<int, Book>(context);
-    }
+
     public async Task<BaseMessage<Book>> CreateBook(Book book)
     {
-        var newBook = new Book()
-        {
-            Title = book.Title,
-            ISBN10 = book.ISBN10,
-            ISBN13 = book.ISBN13,
-            Published = book.Published,
-            Edition = book.Edition,
-            DeweyIndex = book.DeweyIndex,
-            AuthorId = book.AuthorId
-        };
-
         try{
-            await _context.Books.AddAsync(newBook);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.BookRepository.AddAsync(book);
+            await _unitOfWork.SaveAsync();
         }
         catch(Exception ex)
         {
             return Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_500} | {ex.Message}" );
         }
-        return Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Book>{newBook});
+        return Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Book>{book});
     }
 
     public async Task<BaseMessage<Book>> GetAllBooks()
     {
         
-        var response = await _repository.GetAllAsync();
+        var response = await _unitOfWork.BookRepository.GetAllAsync();
 
         return response.Any()? Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK, BaseMessageStatus.OK_200, response): Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
 
@@ -58,14 +49,15 @@ public class BookService : IBookService
 
     public async Task<BaseMessage<Book>> GetByAuthorId(int AuthorId)
     {
-        var BookList = await _context.Books.Where(x => x.AuthorId == AuthorId).ToListAsync();
+        //var BookList = await _context.Books.Where(x => x.AuthorId == AuthorId).ToListAsync();
+        var BookList = await _unitOfWork.BookRepository.GetAllAsync(x=>x.AuthorId ==AuthorId);
         return BookList.Any()? Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK,BaseMessageStatus.OK_200,BookList): 
         Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound,BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
     }
 
     public async Task<BaseMessage<Book>> GetByAuthorName(string AuthorName)
     {
-        var BookList = await _context.Books.Where(x => x.Author.Name.Contains(AuthorName, StringComparison.InvariantCultureIgnoreCase)).ToListAsync();
+        var BookList = await _unitOfWork.BookRepository.GetAllAsync(x => x.Author.Name.Contains(AuthorName, StringComparison.InvariantCultureIgnoreCase));
         return BookList.Any()? Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK,BaseMessageStatus.OK_200,BookList): 
         Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound,BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
     }
@@ -78,59 +70,32 @@ public class BookService : IBookService
             return new List<Book>();
         }
         var list = Utilities.Utilities.createABooksList();
-        // for (int i = 0; i< list.Count; i++)
-        // {
-        //     if (list[i].Id == id)
-        //     {
-        //         var listBooks = new List<Books>();
-        //         listBooks.Add(list[i]);
-        //         return listBooks;
-        //     }
-        // }
 
-        var listBooks = list.Where(x => x.Id==id);
-        return listBooks;
+        var listBooks = await _unitOfWork.BookRepository.FindAsync(id);
+        return new List<Book> {listBooks};
     }
 
     public async Task<BaseMessage<Book>> GetByName(string name)
     {
-        var elemento =_context.Books.Where(x => x.Title.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
-        return elemento.Any()? Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK,BaseMessageStatus.OK_200,elemento): Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound,BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
+        var response = await _unitOfWork.BookRepository.GetAllAsync(x => x.Title.Contains(name, StringComparison.InvariantCultureIgnoreCase));
+
+        return response.Any()? Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK, BaseMessageStatus.OK_200, response): Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
+
     }
 
     public async Task<BaseMessage<Book>> Update(Book book)
     {
-        var newBook = _context.Books.Where(x=>x.Title.Contains(book.Title, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-        if(book!=null && newBook!=null)
+        try{
+            await _unitOfWork.BookRepository.Update(book);
+            await _unitOfWork.SaveAsync();
+            return Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Book>{book});
+        }catch
         {
-            newBook.DeweyIndex = book.DeweyIndex;
-            newBook.ISBN10 = book.ISBN10;
-            newBook.ISBN13 = book.ISBN13;
-            newBook.Edition = book.Edition;
-
-
-            try {
-                await _repository.Update(newBook);
-
-                return Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK,BaseMessageStatus.OK_200, new List<Book>(){
-                    new Book()
-        {
-            Title = book.Title,
-            ISBN10 = book.ISBN10,
-            ISBN13 = book.ISBN13,
-            Published = book.Published,
-            Edition = book.Edition,
-            DeweyIndex = book.DeweyIndex
+            return Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
         }
-                });
-            }
-            catch(Exception ex)
-            {
-               return Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound,BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
-
-            }
-        }
-        return Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound,BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
+        
+        
        
     }
 }
+
