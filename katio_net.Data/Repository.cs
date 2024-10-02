@@ -16,46 +16,59 @@ where TEntity : BaseEntity<TId>
         _context = context;
         _dbSet = context.Set<TEntity>();
     }
-    public Task AddAsync(TEntity entity)
+    public virtual async Task Update(TEntity entity)
     {
-        throw new NotImplementedException();
+        _dbSet.Attach(entity);
+        _context.Entry(entity).State = EntityState.Modified;
+    }
+    public virtual async Task AddAsync(TEntity entity)
+    {
+        await _dbSet.AddAsync(entity);
     }
 
-    public Task Delete(TEntity entity)
+   public virtual async Task Delete(TEntity entity)
     {
-        throw new NotImplementedException();
-        
+        if(_context.Entry(entity).State == EntityState.Detached)
+        {
+            _dbSet.Attach(entity);
+        }
+        _dbSet.Remove(entity);
     }
 
-    public Task Delete(TId id)
+    public virtual async Task Delete(TId id)
     {
-        throw new NotImplementedException();
+        TEntity entityToDelete = await _dbSet.FindAsync(id);
+        Delete(entityToDelete);
     }
 
-    public async Task<TEntity> FindAsync(TId id)
+    public virtual async Task<TEntity> FindAsync(TId id)
     {
         
         return await _dbSet.FindAsync(id);
     }
 
 
-    public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, Book>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderby = null, string includeProperties = "")
+    public virtual async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderby = null, string includeProperties = "")
     {
-        var lista = await _dbSet.ToListAsync();
-        return lista;
-    }
+        IQueryable<TEntity> query = _dbSet;
+        if(filter is not null)
+        {
+            query = query.Where(filter);
+        }
 
-    public async Task Update(TEntity entity)
-    {
-        
-            _dbSet.Update(entity);      
-            try
-            {
-                await _context.SaveChangesAsync();
-            }catch(Exception)
-            {
-                
-            }
-        
+        foreach (var includeProperty in includeProperties.Split(
+            new char[]{','}, StringSplitOptions.RemoveEmptyEntries))
+        {
+            query = query.Include(includeProperty);
+        }
+
+        if(orderby is not null)
+        {
+            return await orderby(query).ToListAsync();
+        }
+        else
+        {
+            return await query.ToListAsync();
+        }
     }
 }

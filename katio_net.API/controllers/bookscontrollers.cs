@@ -1,6 +1,7 @@
 using System;
 using katio.Business.Interfaces;
 using katio.Data.Models;
+using Katio.Data;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +21,7 @@ public class BooksController: ControllerBase
     public async Task<IActionResult> Index()
     {
         var response = await _bookService.GetAllBooks();
-        return response.TotalElements > 0 ? Ok(response): StatusCode(StatusCodes.Status204NoContent,response);
+        return response.TotalElements > 0 ? Ok(response): StatusCode(StatusCodes.Status204NoContent, response);
 
     }
 
