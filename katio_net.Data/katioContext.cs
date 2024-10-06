@@ -2,6 +2,7 @@ using System;
 using katio.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace katio_net.Data;
 
 public class katioContext: DbContext
@@ -15,10 +16,26 @@ public class katioContext: DbContext
     public DbSet<Narrator> Narrator { get; set;} = null;
     public DbSet<Genres> Genres { get; set;} = null;
 
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        if (builder ==null)
+        {
+            return;
+        }
+
+        builder.Entity<Book>().ToTable("Books").HasKey(k =>k.Id);
+        builder.Entity<Author>().ToTable("Author").HasKey(k =>k.Id);
+        builder.Entity<User>().ToTable("User").HasKey(k =>k.Id);
+        builder.Entity<AudioBooks>().ToTable("AudioBooks").HasKey(k =>k.Id);
+        builder.Entity<Narrator>().ToTable("Narrator").HasKey(k =>k.Id);
+        builder.Entity<Genres>().ToTable("Genres").HasKey(k =>k.Id);
+
+        base.OnModelCreating(builder);
+    }
 
 
 
-    
+
 
 
 }

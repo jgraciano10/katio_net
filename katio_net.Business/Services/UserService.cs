@@ -1,25 +1,24 @@
 using System.Net;
 using katio.Data.Dto;
 using katio.Data.Models;
+using Katio.Data;
 using katio_net.Data;
 
 namespace katio.Business.Services;
 
 public class UserService : IUserService
 {
-    public readonly katioContext _context;
-    public PasswordHasher _passwordHasher;
-    public readonly Repository<int, User> _repository;
 
-    public UserService (katioContext context)
+    public IUnitOfWork _unitOfWork;
+    public PasswordHasher _passwordHasher;
+
+    public UserService (IUnitOfWork unitOfWork)
     {
-        _context = context;
-        _repository = GetRepository(_context);
+       
         _passwordHasher = new PasswordHasher();
+        _unitOfWork = unitOfWork;
     }
-     public Repository<int, User> GetRepository(katioContext context){
-        return new Repository<int, User>(context);
-    }
+    
     public async Task<BaseMessage<User>> CreateUser(User user)
     {
         if(user.Passhash.Length>10)
@@ -27,8 +26,8 @@ public class UserService : IUserService
             user.Passhash = _passwordHasher.hash(user.Passhash);
             try
             {
-               await _repository.AddAsync(user);
-               await _context.SaveChangesAsync();
+               await _unitOfWork.UserRepository.AddAsync(user);
+               await _unitOfWork.SaveAsync();
 
             }catch(Exception ex)
             {
@@ -42,14 +41,14 @@ public class UserService : IUserService
     public async Task<BaseMessage<User>> GetAllUsers()
     {
         
-            var listUsers = await _repository.GetAllAsync();
+            var listUsers = await _unitOfWork.UserRepository.GetAllAsync();
             return listUsers.Any()?Utilities.Utilities.BuilResponse<User>(HttpStatusCode.OK, BaseMessageStatus.OK_200, listUsers ):Utilities.Utilities.BuilResponse<User>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_500} | No se puso obtener" );
             
     }
     public async Task<BaseMessage<User>> Login(string email, string inputPassword)
     {
-        var userList = _context.User.Where(x => x.Email.Contains(email, StringComparison.InvariantCultureIgnoreCase)).ToList();
-        
+        //var userList = _context.User.Where(x => x.Email.Contains(email, StringComparison.InvariantCultureIgnoreCase)).ToList();
+        var userList = await _unitOfWork.UserRepository.GetAllAsync(x => x.Email.Contains(email, StringComparison.InvariantCultureIgnoreCase));
         if (!userList.Any())
         {
             return Utilities.Utilities.BuilResponse<User>(HttpStatusCode.NotFound, BaseMessageStatus.NOT_FOUND_404, new List<User>());

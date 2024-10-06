@@ -12,7 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddDbContext<katioContext>(opt => opt.UseInMemoryDatabase("katio"));
+builder.Services.AddDbContext<katioContext>(opt => //opt.UseInMemoryDatabase("katio"));
+                                            opt.UseNpgsql(builder.Configuration.GetConnectionString("KatioDBPSQL")));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();

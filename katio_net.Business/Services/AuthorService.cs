@@ -6,16 +6,19 @@ using katio_net.Data;
 using katio.Data.Dto;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
+using Katio.Data;
 
 namespace katio.Business.Services;
 
 public class AuthorService : IAuthorService
 {
-    public readonly katioContext _context;
+    
+    public IUnitOfWork _unitOfWork;
 
-    public AuthorService (katioContext context)
+    public AuthorService (IUnitOfWork unitOfWork)
     {
-        _context = context;
+        
+        _unitOfWork = unitOfWork;
     }
     public async Task<BaseMessage<Author>> CreateAuthor(Author author)
     {
@@ -28,8 +31,10 @@ public class AuthorService : IAuthorService
         };
 
         try{
-            await _context.Author.AddAsync(newAuthor);
-            await _context.SaveChangesAsync();
+            
+            await _unitOfWork.AuthorRepository.AddAsync(newAuthor);
+            await _unitOfWork.SaveAsync();
+            
         }
         catch(Exception ex)
         {
@@ -40,7 +45,8 @@ public class AuthorService : IAuthorService
 
     public async Task<BaseMessage<Author>> GetAllAuthors()
     {
-        var response = await  _context.Author.ToListAsync();
+       
+        var response = await _unitOfWork.AuthorRepository.GetAllAsync();
 
         return response.Any()? Utilities.Utilities.BuilResponse<Author>(HttpStatusCode.OK, BaseMessageStatus.OK_200, response): Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Author>());
     }
