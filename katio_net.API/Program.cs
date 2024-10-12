@@ -23,7 +23,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
-PopulateDB(app);
+//PopulateDB(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -59,7 +59,7 @@ app.MapGet("/weatherforecast", () =>
 app.Run();
 
 
-PopulateDB(app);
+//PopulateDB(app);
 
 //...
 
