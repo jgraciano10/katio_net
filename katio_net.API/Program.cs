@@ -20,10 +20,11 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IGenresService, GenresService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
-//PopulateDB(app);
+PopulateDB(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -69,6 +70,20 @@ async void PopulateDB(WebApplication app)
 {
     using(var scope = app.Services.CreateAsyncScope())
     {
+
+        #region Genres service
+         var GenresService = scope.ServiceProvider.GetService<IGenresService>();
+        await GenresService.CreateGenres(new katio.Data.Models.Genres{
+            name="Novela",
+            Id =1
+        });
+
+        await GenresService.CreateGenres(new katio.Data.Models.Genres{
+            name="Terror",
+            Id =2
+        });
+        #endregion
+
         #region author service
         var AuthorService = scope.ServiceProvider.GetService<IAuthorService>();
         await AuthorService.CreateAuthor(new katio.Data.Models.Author{
@@ -302,7 +317,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(1967, 06, 05),
             Edition = "RAE Obra Académica",
             DeweyIndex = "800",
-            AuthorId = 1
+            AuthorId =1,
+            GenresId =1
         });
 
         await bookService.CreateBook(new katio.Data.Models.Book
@@ -313,7 +329,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2019, 01, 01),
             Edition = "1ra Edicion",
             DeweyIndex = "800",
-            AuthorId = 3
+            AuthorId = 3,
+            GenresId =1
         });
 
         await bookService.CreateBook(new katio.Data.Models.Book
@@ -324,7 +341,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(1867, 01, 01),
             Edition = "1ra edición",
             DeweyIndex = "800",
-            AuthorId = 2
+            AuthorId = 2,
+            GenresId =1
         });
 
         await bookService.CreateBook(new katio.Data.Models.Book
@@ -335,7 +353,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2020, 06, 30),
             Edition = "Del Rey",
             DeweyIndex = "800",
-            AuthorId = 4
+            AuthorId = 4,
+            GenresId =1
         });
 
         await bookService.CreateBook(new katio.Data.Models.Book
@@ -346,7 +365,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(1984, 01, 01),
             Edition = "Alfaguara",
             DeweyIndex = "800",
-            AuthorId = 12
+            AuthorId = 12,
+            GenresId =1
         });
 
         await bookService.CreateBook(new katio.Data.Models.Book
@@ -357,7 +377,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2004, 01, 01),
             Edition = "Alfaguara",
             DeweyIndex = "800",
-            AuthorId = 9
+            AuthorId = 9,
+            GenresId =1
         });
 
         await bookService.CreateBook(new katio.Data.Models.Book
@@ -368,7 +389,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2019, 01, 01),
             Edition = "Siruela",
             DeweyIndex = "800",
-            AuthorId = 5
+            AuthorId = 5,
+            GenresId =1
         });
 
         await bookService.CreateBook(new katio.Data.Models.Book
@@ -379,7 +401,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2017, 10, 16),
             Edition = "Alfaguara",
             DeweyIndex = "800",
-            AuthorId = 8
+            AuthorId = 8,
+            GenresId =1
         });        
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -389,7 +412,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2020, 08, 22),
             Edition = "ndom House",
             DeweyIndex = "800",
-            AuthorId = 13
+            AuthorId = 13,
+            GenresId =1
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -399,7 +423,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2024, 03, 19),
             Edition = "Alfaguara",
             DeweyIndex = "800",
-            AuthorId = 10
+            AuthorId = 10,
+            GenresId =1
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -409,7 +434,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2015, 12, 29),
             Edition = "ebolsillo",
             DeweyIndex = "800",
-            AuthorId = 14
+            AuthorId = 14,
+            GenresId =1
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -419,7 +445,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2005, 03, 30),
             Edition = "Planeta",
             DeweyIndex = "800",
-            AuthorId = 15
+            AuthorId = 15,
+            GenresId =1
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -429,7 +456,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2018, 01, 30),
             Edition = "ebolsillo",
             DeweyIndex = "800",
-            AuthorId = 11
+            AuthorId = 11,
+            GenresId =1
 
         });
         await bookService.CreateBook(new katio.Data.Models.Book
@@ -440,7 +468,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2012, 01, 01),
             Edition = "Planeta",
             DeweyIndex = "800",
-            AuthorId = 16
+            AuthorId = 16,
+            GenresId =1
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -450,7 +479,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2018, 01, 01),
             Edition = "Planeta DeAgostini Comic",
             DeweyIndex = "800",
-            AuthorId = 7
+            AuthorId = 7,
+            GenresId =1
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -460,7 +490,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2019, 01, 27),
             Edition = "Vinntage Espanol",
             DeweyIndex = "800",
-            AuthorId = 17
+            AuthorId = 17,
+            GenresId =1
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -470,7 +501,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2005, 08, 25),
             Edition = "Vintage",
             DeweyIndex = "800",
-            AuthorId = 17
+            AuthorId = 17,
+            GenresId =1
 
         });
         await bookService.CreateBook(new katio.Data.Models.Book
@@ -481,7 +513,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2018, 02, 20),
             Edition = "Scribner",
             DeweyIndex = "800",
-            AuthorId = 17
+            AuthorId = 17,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -491,7 +524,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2022, 05, 13),
             Edition = "Alfaguara",
             DeweyIndex = "800",
-            AuthorId = 6
+            AuthorId = 6,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -501,7 +535,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2021, 05, 18),
             Edition = "de Bolsillo",
             DeweyIndex = "800",
-            AuthorId = 18
+            AuthorId = 18,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -511,7 +546,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2014, 02, 04),
             Edition = "G Originals",
             DeweyIndex = "800",
-            AuthorId = 19
+            AuthorId = 19,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -521,7 +557,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2014, 05, 06),
             Edition = "G Originals",
             DeweyIndex = "800",
-            AuthorId = 19
+            AuthorId = 19,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -531,7 +568,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2014, 09, 02),
             Edition = "G Originals",
             DeweyIndex = "800",
-            AuthorId = 19
+            AuthorId = 19,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -541,7 +579,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2019, 01, 01),
             Edition = "Crítica",
             DeweyIndex = "800",
-            AuthorId = 12
+            AuthorId = 12,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -551,7 +590,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2016, 11, 01),
             Edition = "Nova",
             DeweyIndex = "800",
-            AuthorId = 20
+            AuthorId = 20,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -561,7 +601,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2024, 05, 01),
             Edition = "Nova",
             DeweyIndex = "800",
-            AuthorId = 20
+            AuthorId = 20,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -571,7 +612,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2018, 08, 01),
             Edition = "1",
             DeweyIndex = "800",
-            AuthorId = 20
+            AuthorId = 20,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -581,7 +623,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(1866, 12, 01),
             Edition = "dependiente",
             DeweyIndex = "800",
-            AuthorId = 21
+            AuthorId = 21,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -591,7 +634,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2022, 10, 27),
             Edition = "CLassic",
             DeweyIndex = "800",
-            AuthorId = 22
+            AuthorId = 22,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -601,7 +645,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2019, 01, 12),
             Edition = "Finngerprint",
             DeweyIndex = "800",
-            AuthorId = 23
+            AuthorId = 23,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -611,7 +656,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2023, 03, 23),
             Edition = "debolsillo",
             DeweyIndex = "800",
-            AuthorId = 24
+            AuthorId = 24,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -621,7 +667,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(1894, 01, 01),
             Edition = "Classic",
             DeweyIndex = "800",
-            AuthorId = 25
+            AuthorId = 25,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -631,7 +678,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2023, 11, 02),
             Edition = "Fantasia epica",
             DeweyIndex = "800",
-            AuthorId = 26
+            AuthorId = 26,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -641,7 +689,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2022, 06, 21),
             Edition = "Vintage",
             DeweyIndex = "800",
-            AuthorId = 28
+            AuthorId = 28,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -651,7 +700,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2020, 11, 07),
             Edition = "Classic",
             DeweyIndex = "800",
-            AuthorId = 29
+            AuthorId = 29,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -661,7 +711,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2015, 10, 06),
             Edition = "Ciencia ficcion",
             DeweyIndex = "800",
-            AuthorId = 30
+            AuthorId = 30,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -681,7 +732,8 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2022, 02, 15),
             Edition = "Planeta",
             DeweyIndex = "800",
-            AuthorId = 33
+            AuthorId = 33,
+            GenresId =2
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
@@ -691,12 +743,13 @@ async void PopulateDB(WebApplication app)
             Published = new DateTime(2007, 01, 01),
             Edition = "Planeta",
             DeweyIndex = "800",
-            AuthorId = 34
+            AuthorId = 34,
+            GenresId =2
         });
         #endregion
     }
-}
 
+}
 
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
