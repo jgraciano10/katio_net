@@ -12,6 +12,7 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     private IRepository<int, Book> _bookRepository;
     private IRepository<int, Author> _authorRepository;
     private IRepository<int, User> _userRepository;
+    private IRepository<int, Genres> _genresRepository;
 
     public UnitOfWork(katioContext context)
     {
@@ -26,6 +27,14 @@ public class UnitOfWork : IUnitOfWork, IDisposable
         {
             _bookRepository ??= new Repository<int, Book>(_context);
             return _bookRepository;
+        }
+    }
+    public IRepository<int, Genres> GenresRepository
+    {
+        get
+        {
+            _genresRepository ??= new Repository<int, Genres>(_context);
+            return _genresRepository;
         }
     }
 

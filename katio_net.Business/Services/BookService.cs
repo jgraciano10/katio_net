@@ -57,7 +57,7 @@ public class BookService : IBookService
 
     public async Task<BaseMessage<Book>> GetByAuthorName(string AuthorName)
     {
-        var BookList = await _unitOfWork.BookRepository.GetAllAsync(x => x.Author.Name.Contains(AuthorName, StringComparison.InvariantCultureIgnoreCase));
+        var BookList = await _unitOfWork.BookRepository.GetAllAsync(x => x.Author.Name.Contains(AuthorName));
         return BookList.Any()? Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK,BaseMessageStatus.OK_200,BookList): 
         Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound,BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
     }
@@ -77,7 +77,7 @@ public class BookService : IBookService
 
     public async Task<BaseMessage<Book>> GetByName(string name)
     {
-        var response = await _unitOfWork.BookRepository.GetAllAsync(x => x.Title.Contains(name, StringComparison.InvariantCultureIgnoreCase));
+        var response = await _unitOfWork.BookRepository.GetAllAsync(x => x.Title.Contains(name));
 
         return response.Any()? Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK, BaseMessageStatus.OK_200, response): Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
 

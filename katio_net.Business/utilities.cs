@@ -29,6 +29,8 @@ public static class Utilities
             ISBN13 ="",
             Edition = "RAE obra academica",
             DeweyIndex ="800",
+            GenresId = 1,
+       
             Published = new DateTime().AddDays(1).AddMonths(10).AddYears(1967),
             Id= 1
               },
@@ -38,6 +40,8 @@ public static class Utilities
             ISBN13 ="",
             Edition = "Planeta",
             DeweyIndex ="",
+            GenresId = 1,
+          
             Published = new DateTime().AddDays(1).AddMonths(10).AddYears(2019),
             Id= 2
               },
@@ -47,6 +51,8 @@ public static class Utilities
             ISBN13 ="",
             Edition = "Planeta",
             DeweyIndex ="",
+            GenresId = 1,
+    
             Published = new DateTime().AddDays(1).AddMonths(10).AddYears(1867),
             Id= 3
               }

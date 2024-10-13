@@ -11,14 +11,22 @@ public class Book : BaseEntity<int>
 
     public string ISBN13 {get; set;}="";
 
+
     public DateTime Published;
 
     public string Edition {get; set;}="";
 
+
     public string DeweyIndex {get; set;}="";
+
     [ForeignKey("Author")]
     public int AuthorId {get; set;}
-
     public virtual Author? Author{get;set;}
+
+    [ForeignKey("Genres")]
+    public int GenresId {get; set;}
+    public virtual Genres? Genres{get;set;} 
+
+
 
 }

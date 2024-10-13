@@ -25,6 +25,7 @@ public class BookTest
         Published = new DateTime(),
         Edition = "Exclusivo",
         DeweyIndex = "616",
+        GenresId = 1,
         AuthorId = 1
     };
 
