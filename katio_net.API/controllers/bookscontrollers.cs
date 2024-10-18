@@ -68,4 +68,13 @@ public class BooksController: ControllerBase
         var response = await _bookService.CreateBook(book);
         return response.statusCode == System.Net.HttpStatusCode.OK? Ok(response): StatusCode((int)response.statusCode, response);
     }
+
+    [HttpGet]
+    [Route("GetByGenre")]
+    public async Task<IActionResult> GetByGenre(string genre)
+    {
+        var response = await _bookService.GetByGenre(genre);
+        return response.TotalElements > 0 ? Ok(response): StatusCode(StatusCodes.Status404NotFound,StatusCode((int)response.statusCode, response));
+
+    }
 }

@@ -13,6 +13,9 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     private IRepository<int, Author> _authorRepository;
     private IRepository<int, User> _userRepository;
     private IRepository<int, Genres> _genresRepository;
+    private IRepository<int, Narrator> _narratorRepository;
+    private IRepository<int, Role> _roleRepository;
+
 
     public UnitOfWork(katioContext context)
     {
@@ -53,6 +56,24 @@ public class UnitOfWork : IUnitOfWork, IDisposable
         {
             _userRepository ??= new Repository<int, User>(_context);
             return _userRepository;
+        }
+    }
+
+    public IRepository<int, Narrator> NarratorRepository
+    {
+         get
+        {
+            _narratorRepository ??= new Repository<int, Narrator>(_context);
+            return _narratorRepository;
+        }
+    }
+
+    public IRepository<int, Role> RoleRepository
+    {
+         get
+        {
+            _roleRepository ??= new Repository<int, Role>(_context);
+            return _roleRepository;
         }
     }
     #endregion

@@ -97,5 +97,13 @@ public class BookService : IBookService
         
        
     }
+
+    public async Task<BaseMessage<Book>> GetByGenre(string genre)
+    {
+        var response = await _unitOfWork.BookRepository.GetAllAsync(x => x.Genres.name.Contains(genre));
+
+        return response.Any()? Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK, BaseMessageStatus.OK_200, response): Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
+
+    }
 }
 

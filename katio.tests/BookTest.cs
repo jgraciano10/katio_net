@@ -195,4 +195,28 @@ public class BookTest
         Assert.AreEqual(HttpStatusCode.NotFound, result.statusCode);
         Assert.IsTrue(result.TotalElements==0);
     }
+    
+    [TestMethod]
+    public async Task GetByGenreSuccess()
+    {
+        _bookRepository.GetAllAsync(x => x.Genres.name.Contains("Novela", StringComparison.InvariantCultureIgnoreCase)).ReturnsForAnyArgs(Task.FromResult<List<Book>>(new List<Book>(){newBook}));
+        _unitOfWork.BookRepository.Returns(_bookRepository);
+        var result = await _bookService.GetByAuthorName("Genres");
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result.ResponseElements, typeof(List<Book>));
+        Assert.AreEqual(HttpStatusCode.OK, result.statusCode);
+        Assert.IsTrue(result.TotalElements>0);
+    } 
+
+    [TestMethod]
+    public async Task GetByGenreFailed()
+    {
+        _bookRepository.GetAllAsync(x => x.Genres.name.Contains("Novela", StringComparison.InvariantCultureIgnoreCase)).ReturnsForAnyArgs(Task.FromResult<List<Book>>(new List<Book>()));
+        _unitOfWork.BookRepository.Returns(_bookRepository);
+        var result = await _bookService.GetByAuthorName("Genres");
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result.ResponseElements, typeof(List<Book>));
+        Assert.AreEqual(HttpStatusCode.NotFound, result.statusCode);
+        Assert.IsTrue(result.TotalElements==0);
+    }
 }    
