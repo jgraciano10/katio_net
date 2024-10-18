@@ -21,10 +21,12 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGenresService, GenresService>();
+builder.Services.AddScoped<INarratorService, NarratorService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
-PopulateDB(app);
+//PopulateDB(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

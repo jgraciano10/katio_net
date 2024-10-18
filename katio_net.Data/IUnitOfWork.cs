@@ -8,5 +8,7 @@ public interface IUnitOfWork
     IRepository<int, Author> AuthorRepository{get;}
     IRepository<int, User> UserRepository{get;}
     IRepository<int, Genres> GenresRepository{get;}
+    IRepository<int, Narrator> NarratorRepository{get;}
+    IRepository<int, Role> RoleRepository{get;}
     Task SaveAsync();
 }

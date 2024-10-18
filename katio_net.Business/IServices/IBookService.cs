@@ -14,4 +14,5 @@ public interface IBookService
 
     Task<BaseMessage<Book>> GetByAuthorId(int AuthorId);
     Task<BaseMessage<Book>> GetByAuthorName(string AuthorName);
+    Task<BaseMessage<Book>> GetByGenre(string genre);
 }
