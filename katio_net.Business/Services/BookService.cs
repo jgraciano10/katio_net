@@ -88,13 +88,11 @@ public class BookService : IBookService
             await _unitOfWork.BookRepository.Update(book);
             await _unitOfWork.SaveAsync();
             return Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Book>{book});
-        }catch
+        }
+        catch
         {
             return Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
         }
-        
-        
-       
     }
 
     public async Task<BaseMessage<Book>> GetByGenre(string genre)
