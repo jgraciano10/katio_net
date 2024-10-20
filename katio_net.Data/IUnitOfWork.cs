@@ -10,5 +10,6 @@ public interface IUnitOfWork
     IRepository<int, Genres> GenresRepository{get;}
     IRepository<int, Narrator> NarratorRepository{get;}
     IRepository<int, Role> RoleRepository{get;}
+    IRepository<int, AudioBooks> AudioBookRepository{get;}
     Task SaveAsync();
 }

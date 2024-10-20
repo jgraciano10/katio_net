@@ -16,6 +16,7 @@ public class BooksController: ControllerBase
     public BooksController(IBookService bookService){
         _bookService = bookService;
     }
+
     [HttpGet]
     [Route("GetAllBooks")]
     public async Task<IActionResult> Index()
@@ -30,7 +31,7 @@ public class BooksController: ControllerBase
     public async Task<IActionResult> GetById(int id)
     {
         var response = await _bookService.GetById(id);
-        return response.Count() > 0 ? Ok(response): StatusCode(StatusCodes.Status404NotFound,"No se lo conseguí");
+        return response.TotalElements > 0 ? Ok(response): StatusCode(StatusCodes.Status404NotFound,"No se lo conseguí");
 
     }
     
@@ -52,6 +53,7 @@ public class BooksController: ControllerBase
         StatusCode(StatusCodes.Status404NotFound,StatusCode((int)response.statusCode, response));
         
     }
+
      [HttpPost]
     [Route("Update")]
     public async Task<IActionResult> Update(Book book)
@@ -76,5 +78,13 @@ public class BooksController: ControllerBase
         var response = await _bookService.GetByGenre(genre);
         return response.TotalElements > 0 ? Ok(response): StatusCode(StatusCodes.Status404NotFound,StatusCode((int)response.statusCode, response));
 
+    }
+
+    [HttpDelete]
+    [Route("Delete")]
+    public async Task<IActionResult> Delete(Book book)
+    {
+         var response = await _bookService.DeleteBook(book);
+        return response.TotalElements > 0 ? Ok(response): StatusCode(StatusCodes.Status404NotFound,StatusCode((int)response.statusCode, response));
     }
 }

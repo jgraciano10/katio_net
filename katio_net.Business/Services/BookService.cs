@@ -62,17 +62,16 @@ public class BookService : IBookService
         Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound,BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
     }
 
-    public async Task<IEnumerable<Book>> GetById(int id)
+    public async Task<BaseMessage<Book>> GetById(int id)
     {
         
         if (id<=0)
         {
-            return new List<Book>();
+            return Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
         }
-        var list = Utilities.Utilities.createABooksList();
 
-        var listBooks = await _unitOfWork.BookRepository.FindAsync(id);
-        return new List<Book> {listBooks};
+        var response = await _unitOfWork.BookRepository.FindAsync(id);
+        return response!=null? Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Book>(){response}): Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
     }
 
     public async Task<BaseMessage<Book>> GetByName(string name)
@@ -104,6 +103,19 @@ public class BookService : IBookService
 
         return response.Any()? Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK, BaseMessageStatus.OK_200, response): Utilities.Utilities.BuilResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Book>());
 
+    }
+
+    public async Task<BaseMessage<Book>> DeleteBook(Book book)
+    {
+         try{
+            await _unitOfWork.BookRepository.Delete(book);
+            await _unitOfWork.SaveAsync();
+        }
+        catch(Exception ex)
+        {
+            return Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_500} | {ex.Message}" );
+        }
+        return Utilities.Utilities.BuilResponse<Book>(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Book>{book});
     }
 }
 

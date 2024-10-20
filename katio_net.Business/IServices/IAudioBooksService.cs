@@ -5,7 +5,7 @@ public interface IAudioBookService
 {
     Task<BaseMessage<AudioBooks>> GetAllAudioBooks();
 
-    Task<IEnumerable<AudioBooks>> GetById(int id);
+    Task<BaseMessage<AudioBooks>> GetById(int id);
 
     Task<BaseMessage<AudioBooks>> GetByName(string name);
     Task<BaseMessage<AudioBooks>> CreateAudioBook(AudioBooks audioBooks);
@@ -18,5 +18,7 @@ public interface IAudioBookService
     Task<BaseMessage<AudioBooks>> GetByNarratorName(string NarratorName);
 
     Task<BaseMessage<AudioBooks>> GetByNarratorId(int NarratorId);
+
+    Task<BaseMessage<AudioBooks>> DeleteAudioBook(AudioBooks audioBooks);
 
 }

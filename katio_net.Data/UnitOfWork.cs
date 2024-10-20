@@ -15,6 +15,7 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     private IRepository<int, Genres> _genresRepository;
     private IRepository<int, Narrator> _narratorRepository;
     private IRepository<int, Role> _roleRepository;
+    private IRepository<int, AudioBooks> _audioBookRepository;
 
 
     public UnitOfWork(katioContext context)
@@ -74,6 +75,15 @@ public class UnitOfWork : IUnitOfWork, IDisposable
         {
             _roleRepository ??= new Repository<int, Role>(_context);
             return _roleRepository;
+        }
+    }
+
+    public IRepository<int, AudioBooks> AudioBookRepository
+    {
+         get
+        {
+            _audioBookRepository ??= new Repository<int, AudioBooks>(_context);
+            return _audioBookRepository;
         }
     }
     #endregion

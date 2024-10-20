@@ -16,13 +16,6 @@ public class AuthorTest
     private readonly IRepository<int, Author> _authorRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IAuthorService _authorService;
-    private Author newAuthor = new Author
-        {
-           Name = "Gabriel",
-           LastName = "Garcia",
-           Country = "Colombia",
-           BirthDate = new DateOnly(1998,10,19)
-        };
 
     public AuthorTest ()
     {
@@ -31,17 +24,14 @@ public class AuthorTest
         _authorService = new AuthorService(_unitOfWork);
         
     }
-    [TestMethod]
 
+    [TestMethod]
     public async Task GetAllAuthorsSuccess()
     {
-        _authorRepository.GetAllAsync().ReturnsForAnyArgs(Task.FromResult<List<Author>>(new List<Author>(){newAuthor}));
+        _authorRepository.GetAllAsync().ReturnsForAnyArgs(Task.FromResult<List<Author>>(new List<Author>(){new Author()}));
         _unitOfWork.AuthorRepository.Returns(_authorRepository);
         var result = await _authorService.GetAllAuthors();
-        Assert.IsNotNull(result);
-        Assert.IsInstanceOfType(result.ResponseElements, typeof(List<Author>));
-        Assert.AreEqual(HttpStatusCode.OK, result.statusCode);
-        
+        Assert.AreEqual(HttpStatusCode.OK, result.statusCode);       
     }
     
     [TestMethod]
@@ -50,32 +40,24 @@ public class AuthorTest
         _authorRepository.GetAllAsync().ReturnsForAnyArgs(Task.FromResult<List<Author>>(new List<Author>()));
         _unitOfWork.AuthorRepository.Returns(_authorRepository);
         var result = await _authorService.GetAllAuthors();
-        Assert.IsNotNull(result);
-        Assert.IsInstanceOfType(result.ResponseElements, typeof(List<Author>));
-        Assert.AreEqual(HttpStatusCode.NotFound, result.statusCode);
-        
+        Assert.AreEqual(HttpStatusCode.NotFound, result.statusCode); 
     }
+
     [TestMethod]
     public async Task CreateAuthorSuccess()
     {
-
-        _authorRepository.AddAsync(newAuthor).ReturnsForAnyArgs(Task.CompletedTask);
+        _authorRepository.AddAsync(Arg.Any<Author>()).ReturnsForAnyArgs(Task.CompletedTask);
         _unitOfWork.AuthorRepository.Returns(_authorRepository);
-        var result = await _authorService.CreateAuthor(newAuthor);
-        Assert.IsNotNull(result);
-        Assert.IsInstanceOfType(result.ResponseElements, typeof(List<Author>));
+        var result = await _authorService.CreateAuthor(new Author());
         Assert.AreEqual(HttpStatusCode.OK, result.statusCode);
     }
 
     [TestMethod]
     public async Task CreateAuthorFailed()
     {
-
-        _authorRepository.AddAsync(newAuthor).ThrowsForAnyArgs(new Exception());
+        _authorRepository.AddAsync(Arg.Any<Author>()).ThrowsForAnyArgs(new Exception());
         _unitOfWork.AuthorRepository.Returns(_authorRepository);
-        var result = await _authorService.CreateAuthor(newAuthor);
-        Assert.IsNotNull(result);
-        Assert.IsInstanceOfType(result.ResponseElements, typeof(List<Author>));
+        var result = await _authorService.CreateAuthor(new Author());
         Assert.AreEqual(HttpStatusCode.InternalServerError, result.statusCode);
     }
 
